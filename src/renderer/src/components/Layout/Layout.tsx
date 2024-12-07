@@ -1,5 +1,6 @@
 import { Flex } from "antd"
 import { Sidebar } from "../Sidebar/Sidebar"
+import { Theme } from "../Theme/Theme"
 
 
 export const Layout = () => {
@@ -10,6 +11,7 @@ export const Layout = () => {
             </div>
             <div className="main-content">
                 {/* Main content*/}
+                <Theme />
             </div>
         </Flex>
     )
