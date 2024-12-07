@@ -1,6 +1,6 @@
 {
   "name": "luna-desktop",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "Run LLMs on Your Local Machine",
   "main": "./out/main/index.js",
   "author": "Introlix Team",
