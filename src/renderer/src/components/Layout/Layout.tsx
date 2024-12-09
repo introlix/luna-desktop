@@ -1,25 +1,31 @@
-import { Flex } from "antd"
-import { Sidebar } from "../Sidebar/Sidebar"
-import { Theme } from "../Theme/Theme"
-import { History } from "../Histroy/History"
+import { Sidebar } from "../Sidebar/Sidebar";
+import { History } from "../Histroy/History";
 import { LlmNotFound } from "../LlmNotFound/LlmNotFound"
+import { Explore } from "../Explore/Explore";
 
 
 export const Layout = () => {
-    const llmfound = false;
+    const llmfound = true;
     return (
-        <Flex>
-            <div className="sidebar">
+        <div className="flex h-screen overflow-hidden">
+            {/* Sidebar */}
+            <div className="sticky top-0 h-screen">
                 <Sidebar />
             </div>
-            <div className="main-content w-full">
-                {llmfound ?
-                    <div className="flex">
-                        <History />
-                        <Theme />
-                    </div> :
-                    <LlmNotFound />}
+
+            {/* Main Content */}
+            <div className={`flex-1 ${llmfound ? "" : "w-full"} overflow-y-auto`}>
+                {llmfound ? (
+                    <div className="flex w-full">
+                        <div className="sticky top-0 h-screen">
+                            <History />
+                        </div>
+                        <Explore />
+                    </div>
+                ) : (
+                    <LlmNotFound />
+                )}
             </div>
-        </Flex>
+        </div>
     )
 }
