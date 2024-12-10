@@ -1,13 +1,13 @@
 import { Sidebar } from "../Sidebar/Sidebar";
 import { History } from "../Histroy/History";
-import { LlmNotFound } from "../LlmNotFound/LlmNotFound"
-import { Explore } from "../Explore/Explore";
+import { LlmNotFound } from "../LlmNotFound/LlmNotFound";
+import { ChatInterface } from "../ChatInterface/ChatInterface";
 
 
 export const Layout = () => {
     const llmfound = true;
     return (
-        <div className="flex h-screen overflow-hidden">
+        <div className="flex h-screen overflow-hidden bg-blue-50 dark:bg-gray-800">
             {/* Sidebar */}
             <div className="sticky top-0 h-screen">
                 <Sidebar />
@@ -20,7 +20,7 @@ export const Layout = () => {
                         <div className="sticky top-0 h-screen">
                             <History />
                         </div>
-                        <Explore />
+                        <ChatInterface />
                     </div>
                 ) : (
                     <LlmNotFound />

@@ -12,6 +12,7 @@ export const LLMCard = ({ modelName, onDownload, downloadProgress, isDownloading
                     {isDownloading ? <Progress className="w-1/2"
                         strokeColor="#3b82f6"
                         trailColor="#fff"
+                        showInfo={false}
                         percent={downloadProgress} status="active" />
                         : <Button
                             type="primary"

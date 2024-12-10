@@ -9,17 +9,22 @@
 
 /* Track */
 ::-webkit-scrollbar-track {
-    background: #f1f1f1;
+    background: transparent;
     border-radius: 5px;
 }
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-    background: #888;
+    background: #bbbaba;
     border-radius: 5px;
 }
 
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
-    background: #555;
+    background: #a3a3a3;
+}
+
+
+.ant-select:not(.ant-select-customize-input) .ant-select-selector .ant-select-selection-placeholder {
+    color: white;
 }
