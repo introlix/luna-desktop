@@ -3,23 +3,27 @@ import Sider from "antd/es/layout/Sider";
 import { BsChat } from "react-icons/bs";
 import { FiGrid, FiSettings } from "react-icons/fi";
 import { Theme } from "../Theme/Theme";
+import { Link } from "react-router-dom";
 
 export const Sidebar = () => {
   const topMenuItems = [
     {
       icon: <BsChat />,
-      title: 'Chat'
+      title: 'Chat',
+      path: '/'
     },
     {
       icon: <FiGrid />,
-      title: 'Explore'
+      title: 'Explore',
+      path: '/explore'
     }
   ];
 
   const bottomMenuItems = [
     {
       icon: <FiSettings />,
-      title: 'Settings'
+      title: 'Settings',
+      path: '/settings'
     }
   ]
 
@@ -39,7 +43,7 @@ export const Sidebar = () => {
                   className="flex justify-center items-center mt-4 cursor-pointer text-gray-600 dark:text-gray-300 hover:text-blue-500"
                   title={item.title} // Tooltip on hover
                 >
-                  <div className="text-2xl">{item.icon}</div>
+                  <Link to={item.path} className="text-2xl">{item.icon}</Link>
                 </div>
               ))}
             </div>

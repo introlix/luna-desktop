@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { LLMCard } from "../LLMCard/LLMCard";
+// import models from "../../../../shared/supported_models";
+import models from "@shared/supported_models";
 
 export const Explore = () => {
     const [downloadingStatus, setDownloadingStatus] = useState({});
@@ -19,78 +21,16 @@ export const Explore = () => {
         // }, 3000);
     };
 
-    const llms = [
-        {
-            modelName: "LLaMA 3.2-1B",
-        },
-        {
-            modelName: "LLaMA 3.2-3B",
-        },
-        {
-            modelName: "Grok",
-        },
-        {
-            modelName: "Gemma 1B",
-        },
-        {
-            modelName: "Mistral",
-        },
-        {
-            modelName: "LLaMA 3.2-1B",
-        },
-        {
-            modelName: "LLaMA 3.2-3B",
-        },
-        {
-            modelName: "Grok",
-        },
-        {
-            modelName: "Gemma 1B",
-        },
-        {
-            modelName: "Mistral",
-        },
-        {
-            modelName: "LLaMA 3.2-1B",
-        },
-        {
-            modelName: "LLaMA 3.2-3B",
-        },
-        {
-            modelName: "Grok",
-        },
-        {
-            modelName: "Gemma 1B",
-        },
-        {
-            modelName: "Mistral",
-        },
-        {
-            modelName: "LLaMA 3.2-1B",
-        },
-        {
-            modelName: "LLaMA 3.2-3B",
-        },
-        {
-            modelName: "Grok",
-        },
-        {
-            modelName: "Gemma 1B",
-        },
-        {
-            modelName: "Mistral",
-        },
-    ];
     return (
         <>
             <div className="w-full px-4 bg-blue-50 dark:bg-gray-800">
-                {llms.map((llm, index) => (
+                {models.map((llm, index) => (
                     <LLMCard
                         key={index}
-                        modelName={llm.modelName}
-                        onDownload={() => handleDownload(llm.modelName)}
+                        modelName={llm.name}
+                        onDownload={() => handleDownload(llm.name)}
                         downloadProgress={10}
-                        isDownloading={downloadingStatus[llm.modelName] || false}
+                        isDownloading={downloadingStatus[llm.name] || false}
                     />
                 ))}
             </div>

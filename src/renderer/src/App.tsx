@@ -1,11 +1,16 @@
-import { Layout } from "./components/Layout/Layout"
+import { Route, Routes } from "react-router-dom";
+import { Chat } from "./Chat";
+import { ExploreLLM } from "./ExploreLLM";
 
 
 function App(): JSX.Element {
 
   return (
     <>
-      <Layout />
+      <Routes>
+        <Route path="/" element={<Chat />} />
+        <Route path="/explore" element={<ExploreLLM />} />
+      </Routes>
     </>
   )
 }

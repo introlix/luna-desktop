@@ -5,7 +5,7 @@ import { ChatInterface } from "../ChatInterface/ChatInterface";
 
 
 export const Layout = () => {
-    const llmfound = true;
+    const llmfound = false;
     return (
         <div className="flex h-screen overflow-hidden bg-blue-50 dark:bg-gray-800">
             {/* Sidebar */}

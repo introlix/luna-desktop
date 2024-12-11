@@ -1,5 +1,6 @@
 import { Button, Card } from "antd"
 import not_llm_found_image from "../../assets/no_llm_found.png"
+import { Link } from "react-router-dom"
 
 export const LlmNotFound = () => {
     return (
@@ -14,7 +15,9 @@ export const LlmNotFound = () => {
                         type="primary"
                         className="mt-4"
                     >
-                        Explore & Download LLMs
+                        <Link to={'/explore'}>
+                            Explore & Download LLMs
+                        </Link>
                     </Button>
                 </Card>
             </div>
