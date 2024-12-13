@@ -13,6 +13,9 @@
     ],
     "baseUrl": ".",
     "paths": {
+      "@/*": [
+        "src/main/*",
+      ],
       "@renderer/*": [
         "src/renderer/src/*"
       ],

@@ -3,22 +3,24 @@ import { LLMCard } from "../LLMCard/LLMCard";
 // import models from "../../../../shared/supported_models";
 import models from "@shared/supported_models";
 
+
 export const Explore = () => {
     const [downloadingStatus, setDownloadingStatus] = useState({});
 
-    const handleDownload = (modelName) => {
+    const handleDownload = async (userName, modelName, fileName) => {
         setDownloadingStatus((prev) => ({
             ...prev,
             [modelName]: true, // Set downloading status to true for the specific LLM
         }));
 
-        // // Simulate download completion after 3 seconds
-        // setTimeout(() => {
-        //     setDownloadingStatus((prev) => ({
-        //         ...prev,
-        //         [modelName]: false, // Reset the status after download
-        //     }));
-        // }, 3000);
+        console.log(userName, modelName, fileName);
+
+        await window.context.downloadLLM(userName, modelName, fileName);
+
+        setDownloadingStatus((prev) => ({
+            ...prev,
+            [modelName]: false,
+        }));
     };
 
     return (
@@ -27,10 +29,10 @@ export const Explore = () => {
                 {models.map((llm, index) => (
                     <LLMCard
                         key={index}
-                        modelName={llm.name}
-                        onDownload={() => handleDownload(llm.name)}
+                        modelName={llm.modelName}
+                        onDownload={() => handleDownload(llm.userName, llm.modelName, llm.fileName)}
                         downloadProgress={10}
-                        isDownloading={downloadingStatus[llm.name] || false}
+                        isDownloading={downloadingStatus[llm.value] || false}
                     />
                 ))}
             </div>

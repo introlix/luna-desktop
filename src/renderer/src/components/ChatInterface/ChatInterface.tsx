@@ -4,7 +4,7 @@ import { Button, ConfigProvider, Input, Space } from "antd"
 import { FaArrowRight } from "react-icons/fa";
 import { MdOutlineFileUpload } from "react-icons/md";
 
-export const ChatInterface = () => {
+export const ChatInterface = ({ fetchedLLMs }) => {
     return (
         <>
             <Layout className="bg-transparent">
@@ -18,7 +18,7 @@ export const ChatInterface = () => {
                                 },
                             }}
                         >
-                        <ChatTool />
+                        <ChatTool modelToSelect={fetchedLLMs} />
                         </ConfigProvider>
 
                     </div>

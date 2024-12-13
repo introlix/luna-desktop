@@ -1,12 +1,6 @@
 import { Layout, Select } from "antd"
 
-export const ChatTool = () => {
-    const modelToSelect = [
-        { label: 'Llama 3.2 3B', value: 'Llama 3.2 3B' },
-        { label: 'Grok', value: 'Grok' },
-        { label: 'Mistral', value: 'Mistral' },
-        { label: 'Gemma', value: 'Gemma' },
-    ];
+export const ChatTool = ({ modelToSelect }) => {
 
     const taskToSelect = [
         { label: 'Text Summarization', value: 'Text Summarization' },
