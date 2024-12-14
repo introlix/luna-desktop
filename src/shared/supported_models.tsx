@@ -9,6 +9,12 @@ const models = [
         fileName: 'Luna_3.2-Q4_K_M',
         value: 'Luna_3.2_3B_GGUF',
     },
+    {
+        userName: 'bartowski',
+        modelName: 'Llama-3.2-1B-Instruct-GGUF',
+        fileName: 'Llama-3.2-1B-Instruct-IQ3_M',
+        value: 'Llama-3.2-1B-Instruct-GGUF',
+    },
     // {
     //     name: 'Llama-3.1-8B',
     //     value: 'Llama-3.1-8B'

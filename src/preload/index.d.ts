@@ -7,6 +7,7 @@ declare global {
       locale: string
       getLLMs: GetLLMs
       downloadLLM: (userName: string, modelName: string, fileName: string, onProgress?: (percentage: number) => void) => Promise<void>
+      generate: (name: string, prompt: string) => Promise<void>
     }
   }
 }

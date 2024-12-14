@@ -1,4 +1,4 @@
-import { downloadLLM, getLLMs } from '@/lib';
+import { downloadLLM, generate, getLLMs } from '@/lib';
 import { app, shell, BrowserWindow, ipcMain } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
@@ -44,22 +44,26 @@ app.whenReady().then(() => {
 
   ipcMain.handle('downloadLLM', async (event, userName: string, modelName: string, fileName: string) => {
     try {
-      await downloadLLM(userName, modelName, fileName,  (percentage) => {
+      await downloadLLM(userName, modelName, fileName, (percentage) => {
         // Send progress updates to the renderer process
         event.sender.send('download-progress', {
-            modelName,
-            percentage,
+          modelName,
+          percentage,
         });
-    });
+      });
 
     } catch (error) {
       console.log(error);
       throw error;
     }
   });
+
   ipcMain.handle('getLLMs', async () => {
     return getLLMs();
   });
+
+  ipcMain.handle('getNgenerateotes', (_, name: string, prompt: string) => generate(name, prompt))
+
 
   createWindow()
 

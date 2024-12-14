@@ -5,6 +5,7 @@ import { appDirectoryName } from '@shared/constants';
 import { ensureDir, readdir } from 'fs-extra';
 import { GetLLMs, LLMInfo } from '@shared/types';
 
+
 export const getRootDir = () => {
     return `${homedir()}/${appDirectoryName}`
 }
@@ -29,7 +30,7 @@ export const getLLMs: GetLLMs = async () => {
 
 
 export const getLLMInfoFromFileName = async (filename: string): Promise<LLMInfo> => {
-    
+
     return {
         title: filename.replace(/\.gguf$/, '')
     }
@@ -92,4 +93,37 @@ export const downloadLLM = async (
         }
         throw error;
     }
+};
+
+export const generate = async (name: string, prompt: string) => {
+    const pathToLLM = path.join(`${getRootDir()}`, `${name}.gguf`);
+
+    const { getLlama, LlamaChatSession } = await import("node-llama-cpp");
+
+    const llama = await getLlama();
+    const model = await llama.loadModel({
+        modelPath: pathToLLM
+    })
+    const context = await model.createContext();
+    const session = new LlamaChatSession({
+        contextSequence: context.getSequence()
+    });
+
+    const response = await session.prompt(prompt);
+
+    console.log(response);
+
+    // Dynamically import the LlamaCpp class
+    // const { LlamaCpp } = await import("@langchain/community/llms/llama_cpp");
+
+    // const model = await LlamaCpp.initialize({
+    //     modelPath: pathToLLM,
+    //     temperature: 0.7,
+    // });
+
+    // const stream = await model.stream(prompt);
+
+    // for await (const chunk of stream) {
+    //     console.log(chunk);
+    // }
 };

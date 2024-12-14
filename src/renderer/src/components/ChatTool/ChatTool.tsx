@@ -1,6 +1,6 @@
 import { Layout, Select } from "antd"
 
-export const ChatTool = ({ modelToSelect }) => {
+export const ChatTool = ({ modelToSelect, setSelectedModel }) => {
 
     const taskToSelect = [
         { label: 'Text Summarization', value: 'Text Summarization' },
@@ -8,9 +8,10 @@ export const ChatTool = ({ modelToSelect }) => {
         { label: 'Code Generation', value: 'Code Generation' },
         { label: 'Translation', value: 'Translation' },
     ]
-    const handleModelChange = () => {
-
-    }
+    const handleModelChange = (value) => {
+        console.log('Selected Model:', value); // Logs the selected value
+        setSelectedModel(value); // Updates state with the selected value
+    };
 
     const handleTaskChange = () => {
 

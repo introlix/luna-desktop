@@ -5,6 +5,7 @@ try {
     contextBridge.exposeInMainWorld('context', {
         locale: navigator.language,
         getLLMs: () => ipcRenderer.invoke('getLLMs'),
+        generate: (name: string, prompt: string) => ipcRenderer.invoke('getNgenerateotes', name, prompt),
         downloadLLM: (
             userName: string,
             modelName: string,
