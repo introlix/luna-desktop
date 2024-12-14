@@ -6,7 +6,7 @@ const models = [
     {
         userName: 'satyam998',
         modelName: 'Luna_3.2_3B_GGUF',
-        fileName: 'README',
+        fileName: 'Luna_3.2-Q4_K_M',
         value: 'Luna_3.2_3B_GGUF',
     },
     // {

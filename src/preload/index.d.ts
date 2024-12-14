@@ -6,7 +6,7 @@ declare global {
     context: {
       locale: string
       getLLMs: GetLLMs
-      downloadLLM: (userName: string, modelName: string, fileName: string) => Promise<void>
+      downloadLLM: (userName: string, modelName: string, fileName: string, onProgress?: (percentage: number) => void) => Promise<void>
     }
   }
 }

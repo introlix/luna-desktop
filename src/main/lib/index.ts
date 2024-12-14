@@ -38,9 +38,10 @@ export const getLLMInfoFromFileName = async (filename: string): Promise<LLMInfo>
 export const downloadLLM = async (
     userName: string,
     modelName: string,
-    fileName: string
+    fileName: string,
+    onProgress: (percentage: number) => void
 ): Promise<void> => {
-    const apiUrl = `https://huggingface.co/${userName}/${modelName}/resolve/main/${fileName}.md?download=true`;
+    const apiUrl = `https://huggingface.co/${userName}/${modelName}/resolve/main/${fileName}.gguf?download=true`;
     const savePath = path.join(getRootDir(), `${fileName}.gguf`);
 
     try {
@@ -52,22 +53,31 @@ export const downloadLLM = async (
             throw new Error(`Failed to download ${fileName}: ${response.statusText}`);
         }
 
+        const contentLength = response.headers.get('Content-Length');
+        if (!contentLength) {
+            throw new Error('Unable to determine file size from response headers.');
+        }
+
+        const totalSize = parseInt(contentLength, 10);
         const readableStream = response.body;
 
         if (!readableStream) {
             throw new Error('No response body received from the server.');
         }
 
-        // Manually read the web ReadableStream and pipe it to the file
         const reader = readableStream.getReader();
         const fileStream = fs.createWriteStream(savePath);
 
+        let downloadedSize = 0;
         let done = false;
 
         while (!done) {
             const { value, done: streamDone } = await reader.read();
             if (value) {
+                downloadedSize += value.length;
                 fileStream.write(Buffer.from(value));
+                const percentage = Math.round((downloadedSize / totalSize) * 100);
+                onProgress(percentage); // Call the progress callback
             }
             done = streamDone;
         }

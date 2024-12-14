@@ -42,9 +42,15 @@ app.whenReady().then(() => {
     optimizer.watchWindowShortcuts(window)
   })
 
-  ipcMain.handle('downloadLLM', async (_, userName: string, modelName: string, fileName: string) => {
+  ipcMain.handle('downloadLLM', async (event, userName: string, modelName: string, fileName: string) => {
     try {
-      await downloadLLM(userName, modelName, fileName);
+      await downloadLLM(userName, modelName, fileName,  (percentage) => {
+        // Send progress updates to the renderer process
+        event.sender.send('download-progress', {
+            modelName,
+            percentage,
+        });
+    });
 
     } catch (error) {
       console.log(error);
