@@ -5,19 +5,18 @@ try {
     contextBridge.exposeInMainWorld('context', {
         locale: navigator.language,
         getLLMs: () => ipcRenderer.invoke('getLLMs'),
+        // preload/index.ts
         generate: (name: string, prompt: string) => {
             return new Promise((resolve, reject) => {
-                const chunks: string[] = []; // Collect chunks for final response
-        
                 // Listen for text chunks
                 ipcRenderer.on('generationChunk', (_, chunk) => {
-                    chunks.push(chunk); // Append chunk to the array
+                    // Send each chunk to the frontend (renderer) in real-time
+                    window.dispatchEvent(new CustomEvent('generationChunk', { detail: chunk }));
                 });
         
                 // Listen for completion
                 ipcRenderer.once('generationComplete', () => {
-                    console.log("Generation completed");
-                    resolve(chunks.join('')); // Resolve with full response
+                    resolve("Generation complete");
                 });
         
                 // Listen for errors

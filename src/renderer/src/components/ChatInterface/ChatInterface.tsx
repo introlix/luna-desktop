@@ -3,28 +3,28 @@ import { ChatTool } from "../ChatTool/ChatTool";
 import { Button, ConfigProvider, Input, Space } from "antd";
 import { FaArrowRight } from "react-icons/fa";
 import { MdOutlineFileUpload } from "react-icons/md";
-import { useState } from "react";
-
-const generate_response = async (name: string, prompt: string) => {
-    if (window.context?.generate) {
-        try {
-            const response = await window.context.generate(name, prompt);
-            console.log("AI response:", response);
-            return response;
-        } catch (error) {
-            console.error("Error generating response:", error);
-            return "Error generating response"; // Fallback in case of an error
-        }
-    } else {
-        console.error("Window context or generate function is not defined");
-        return "Error: Generate function not available";
-    }
-};
+import { useState, useEffect } from "react";
 
 export const ChatInterface = ({ fetchedLLMs }: { fetchedLLMs: string[] }) => {
     const [prompt, setPrompt] = useState("");
     const [selectedModel, setSelectedModel] = useState<string | null>(null);
     const [aiResponse, setAiResponse] = useState("");
+
+    useEffect(() => {
+        // Listener for each chunk received from the backend
+        const handleChunk = (event: Event) => {
+            const chunk = (event as CustomEvent).detail;
+            setAiResponse((prevResponse) => prevResponse + chunk); // Append the current chunk to the response
+        };
+
+        // Listen for generation chunk events
+        window.addEventListener("generationChunk", handleChunk);
+
+        return () => {
+            // Cleanup the listener on component unmount
+            window.removeEventListener("generationChunk", handleChunk);
+        };
+    }, []);
 
     const onSubmit = async () => {
         if (!prompt.trim()) {
@@ -37,8 +37,8 @@ export const ChatInterface = ({ fetchedLLMs }: { fetchedLLMs: string[] }) => {
         }
 
         try {
-            const response = await generate_response(selectedModel, prompt);
-            setAiResponse(response); // Update the response state with the AI output
+            await window.context.generate(selectedModel, prompt); // Initiate the generation process
+            setAiResponse(""); // Clear the response before new chunks are received
         } catch (error) {
             console.error("Error in submission:", error);
         }
@@ -66,7 +66,7 @@ export const ChatInterface = ({ fetchedLLMs }: { fetchedLLMs: string[] }) => {
                         </ConfigProvider>
                     </div>
                 </div>
-                <h1>{aiResponse}</h1>
+                <h1>{aiResponse}</h1> {/* Display the live updated response */}
                 <div className="chat mx-2 mb-4 flex justify-center">
                     <Space direction="vertical" className="md:w-full lg:w-1/2">
                         <Space.Compact className="w-full">
