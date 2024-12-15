@@ -7,17 +7,26 @@ import { useState } from "react";
 
 const generate_response = async (name: string, prompt: string) => {
     if (window.context?.generate) {
-        await window.context.generate(name, prompt);
+        try {
+            const response = await window.context.generate(name, prompt);
+            console.log("AI response:", response);
+            return response;
+        } catch (error) {
+            console.error("Error generating response:", error);
+            return "Error generating response"; // Fallback in case of an error
+        }
     } else {
         console.error("Window context or generate function is not defined");
+        return "Error: Generate function not available";
     }
 };
 
-export const ChatInterface = ({ fetchedLLMs }) => {
+export const ChatInterface = ({ fetchedLLMs }: { fetchedLLMs: string[] }) => {
     const [prompt, setPrompt] = useState("");
     const [selectedModel, setSelectedModel] = useState<string | null>(null);
+    const [aiResponse, setAiResponse] = useState("");
 
-    const onSubmit = () => {
+    const onSubmit = async () => {
         if (!prompt.trim()) {
             alert("Please enter a valid prompt!");
             return;
@@ -26,7 +35,14 @@ export const ChatInterface = ({ fetchedLLMs }) => {
             alert("Please select a model!");
             return;
         }
-        generate_response(selectedModel, prompt);
+
+        try {
+            const response = await generate_response(selectedModel, prompt);
+            setAiResponse(response); // Update the response state with the AI output
+        } catch (error) {
+            console.error("Error in submission:", error);
+        }
+
         setPrompt(""); // Clear the input field after submission
     };
 
@@ -50,6 +66,7 @@ export const ChatInterface = ({ fetchedLLMs }) => {
                         </ConfigProvider>
                     </div>
                 </div>
+                <h1>{aiResponse}</h1>
                 <div className="chat mx-2 mb-4 flex justify-center">
                     <Space direction="vertical" className="md:w-full lg:w-1/2">
                         <Space.Compact className="w-full">

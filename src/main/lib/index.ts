@@ -95,35 +95,27 @@ export const downloadLLM = async (
     }
 };
 
-export const generate = async (name: string, prompt: string) => {
+export const generate = async (name: string, prompt: string, onChunk: (chunk: string) => void) => {
     const pathToLLM = path.join(`${getRootDir()}`, `${name}.gguf`);
 
     const { getLlama, LlamaChatSession } = await import("node-llama-cpp");
 
     const llama = await getLlama();
     const model = await llama.loadModel({
-        modelPath: pathToLLM
-    })
-    const context = await model.createContext();
-    const session = new LlamaChatSession({
-        contextSequence: context.getSequence()
+        modelPath: pathToLLM,
     });
 
-    const response = await session.prompt(prompt);
+    const context = await model.createContext();
+    const session = new LlamaChatSession({
+        contextSequence: context.getSequence(),
+    });
 
-    console.log(response);
-
-    // Dynamically import the LlamaCpp class
-    // const { LlamaCpp } = await import("@langchain/community/llms/llama_cpp");
-
-    // const model = await LlamaCpp.initialize({
-    //     modelPath: pathToLLM,
-    //     temperature: 0.7,
-    // });
-
-    // const stream = await model.stream(prompt);
-
-    // for await (const chunk of stream) {
-    //     console.log(chunk);
-    // }
+    // Start streaming response with token callbacks
+    await session.prompt(prompt, {
+        onTextChunk(chunk: string) {
+            onChunk(chunk); // Send the chunk to the provided callback
+        },
+    });
 };
+
+

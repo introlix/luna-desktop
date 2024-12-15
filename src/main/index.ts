@@ -62,7 +62,30 @@ app.whenReady().then(() => {
     return getLLMs();
   });
 
-  ipcMain.handle('getNgenerateotes', (_, name: string, prompt: string) => generate(name, prompt))
+  ipcMain.handle('generate', async (event, name: string, prompt: string) => {
+    const webContents = event.sender; // Access the sender of the IPC call
+
+    try {
+      // Call the generate function with a callback for streaming chunks
+      await generate(name, prompt, (chunk: string) => {
+        // Send each text chunk to the renderer process
+        webContents.send('generationChunk', chunk);
+      });
+
+      // Optionally send a completion message to the renderer process
+      webContents.send('generationComplete');
+    } catch (error: unknown) {
+      // Handle 'unknown' error type properly
+      let errorMessage = "An unknown error occurred";
+      if (error instanceof Error) {
+        errorMessage = error.message; // Safely access the message
+      }
+
+      console.error("Error during generation:", errorMessage);
+      webContents.send('generationError', errorMessage);
+    }
+  });
+
 
 
   createWindow()
