@@ -1,4 +1,4 @@
-import { downloadLLM, generate, getLLMs } from '@/lib';
+import { downloadLLM, generate, getLLMs, loadChatHistory, saveChatHistory } from '@/lib';
 import { app, shell, BrowserWindow, ipcMain } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
@@ -86,7 +86,13 @@ app.whenReady().then(() => {
     }
   });
 
+  ipcMain.handle('saveChatHistory', async (_, chatId: string, userMessage: string, aiResponse: string) => {
+    await saveChatHistory(chatId, userMessage, aiResponse);
+  });
 
+  ipcMain.handle('loadChatHistory', async (_, chatId: string) => {
+    return loadChatHistory(chatId);
+  });
 
   createWindow()
 

@@ -7,7 +7,7 @@ try {
         getLLMs: () => ipcRenderer.invoke('getLLMs'),
         // preload/index.ts
         generate: (name: string, prompt: string) => {
-            return new Promise((resolve, reject) => {
+            return new Promise((_, reject) => {
                 // Listen for text chunks
                 ipcRenderer.on('generationChunk', (_, chunk) => {
                     // Send each chunk to the frontend (renderer) in real-time
@@ -16,7 +16,7 @@ try {
         
                 // Listen for completion
                 ipcRenderer.once('generationComplete', () => {
-                    resolve("Generation complete");
+                    window.dispatchEvent(new CustomEvent('generationComplete'));
                 });
         
                 // Listen for errors
@@ -58,6 +58,8 @@ try {
                 return ipcRenderer.invoke('downloadLLM', userName, modelName, fileName);
             }
         },
+        saveChatHistory: (chatId: string, userMessage: string, aiResponse: string) => ipcRenderer.invoke('saveChatHistory', chatId, userMessage, aiResponse),
+        loadChatHistory: (chatId: string) => ipcRenderer.invoke('loadChatHistory', chatId),
     });
 } catch (error) {
     console.log(error)

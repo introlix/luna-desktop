@@ -5,6 +5,11 @@ import { appDirectoryName } from '@shared/constants';
 import { ensureDir, readdir } from 'fs-extra';
 import { GetLLMs, LLMInfo } from '@shared/types';
 
+// Define the shape of each chat message
+interface ChatMessage {
+    userMessage: string;
+    aiResponse: string;
+}
 
 export const getRootDir = () => {
     return `${homedir()}/${appDirectoryName}`
@@ -119,3 +124,37 @@ export const generate = async (name: string, prompt: string, onChunk: (chunk: st
 };
 
 
+// Function to save chat history
+export const saveChatHistory = async (chatId: string, userMessage: string, aiResponse: string): Promise<void> => {
+    const chatDirectory = path.join(getRootDir(), 'chats');
+    await ensureDir(chatDirectory); // Ensure the directory exists
+
+    // Define the path for the chat file (based on chatId)
+    const chatFilePath = path.join(chatDirectory, `${chatId}.json`);
+
+    // Load existing chat history or initialize it as an empty array
+    let chatHistory: ChatMessage[] = [];
+    if (fs.existsSync(chatFilePath)) {
+        const chatFileContent = fs.readFileSync(chatFilePath, 'utf-8');
+        chatHistory = JSON.parse(chatFileContent);
+    }
+
+    // Append the new user message and AI response
+    chatHistory.push({ userMessage, aiResponse });
+
+    // Save the updated chat history
+    fs.writeFileSync(chatFilePath, JSON.stringify(chatHistory, null, 2), 'utf-8');
+};
+
+// Function to load chat history
+export const loadChatHistory = async (chatId: string): Promise<ChatMessage[]> => {
+    const chatDirectory = path.join(getRootDir(), 'chats');
+    const chatFilePath = path.join(chatDirectory, `${chatId}.json`);
+
+    if (fs.existsSync(chatFilePath)) {
+        const chatFileContent = fs.readFileSync(chatFilePath, 'utf-8');
+        return JSON.parse(chatFileContent);
+    }
+
+    return []; // Return an empty array if no history exists
+};
