@@ -29,7 +29,9 @@
     "fs-extra": "^11.2.0",
     "node-llama-cpp": "^3.3.1",
     "react-icons": "^5.4.0",
-    "react-router-dom": "^7.0.2"
+    "react-markdown": "^9.0.1",
+    "react-router-dom": "^7.0.2",
+    "remark-gfm": "^4.0.0"
   },
   "devDependencies": {
     "@electron-toolkit/eslint-config-prettier": "^2.0.0",

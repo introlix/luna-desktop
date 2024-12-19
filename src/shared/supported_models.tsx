@@ -15,6 +15,12 @@ const models = [
         fileName: 'Llama-3.2-1B-Instruct-IQ3_M',
         value: 'Llama-3.2-1B-Instruct-GGUF',
     },
+    {
+        userName: 'Qwen',
+        modelName: 'Qwen2-0.5B-Instruct-GGUF',
+        fileName: 'qwen2-0_5b-instruct-q2_k',
+        value: 'Qwen2-0.5B-Instruct-GGUF',
+    }
     // {
     //     name: 'Llama-3.1-8B',
     //     value: 'Llama-3.1-8B'
