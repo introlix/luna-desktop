@@ -58,7 +58,7 @@ try {
                 return ipcRenderer.invoke('downloadLLM', userName, modelName, fileName);
             }
         },
-        saveChatHistory: (chatId: string, userMessage: string, aiResponse: string) => ipcRenderer.invoke('saveChatHistory', chatId, userMessage, aiResponse),
+        saveChatHistory: (chatId: string, userMessage: string, aiResponse: string, modelName: string) => ipcRenderer.invoke('saveChatHistory', chatId, userMessage, aiResponse, modelName),
         loadChatHistory: (chatId: string) => ipcRenderer.invoke('loadChatHistory', chatId),
     });
 } catch (error) {

@@ -9,6 +9,7 @@ import { GetLLMs, LLMInfo } from '@shared/types';
 interface ChatMessage {
     userMessage: string;
     aiResponse: string;
+    modelName: string;
 }
 
 export const getRootDir = () => {
@@ -125,7 +126,7 @@ export const generate = async (name: string, prompt: string, onChunk: (chunk: st
 
 
 // Function to save chat history
-export const saveChatHistory = async (chatId: string, userMessage: string, aiResponse: string): Promise<void> => {
+export const saveChatHistory = async (chatId: string, userMessage: string, aiResponse: string, modelName: string): Promise<void> => {
     const chatDirectory = path.join(getRootDir(), 'chats');
     await ensureDir(chatDirectory); // Ensure the directory exists
 
@@ -140,7 +141,7 @@ export const saveChatHistory = async (chatId: string, userMessage: string, aiRes
     }
 
     // Append the new user message and AI response
-    chatHistory.push({ userMessage, aiResponse });
+    chatHistory.push({ userMessage, aiResponse, modelName });
 
     // Save the updated chat history
     fs.writeFileSync(chatFilePath, JSON.stringify(chatHistory, null, 2), 'utf-8');

@@ -77,7 +77,7 @@ export const ChatInterface = ({ fetchedLLMs }) => {
             // When the response is complete, save the chat history
             const chatId = uuidv4();  // Replace with your dynamic chat ID
             if (prompt && aiResponse) {
-                window.context.saveChatHistory(chatId, prompt, aiResponse); // Save user prompt and AI response
+                window.context.saveChatHistory(chatId, prompt, aiResponse, selectedModel || ''); // Save user prompt and AI response
             }
             setDisableSubmit(false);
             navigate(`/chat/${chatId}`);

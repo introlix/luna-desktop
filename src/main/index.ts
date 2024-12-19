@@ -86,8 +86,8 @@ app.whenReady().then(() => {
     }
   });
 
-  ipcMain.handle('saveChatHistory', async (_, chatId: string, userMessage: string, aiResponse: string) => {
-    await saveChatHistory(chatId, userMessage, aiResponse);
+  ipcMain.handle('saveChatHistory', async (_, chatId: string, userMessage: string, aiResponse: string, modelName: string) => {
+    await saveChatHistory(chatId, userMessage, aiResponse, modelName);
   });
 
   ipcMain.handle('loadChatHistory', async (_, chatId: string) => {

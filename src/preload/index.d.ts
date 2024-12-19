@@ -8,7 +8,7 @@ declare global {
       getLLMs: GetLLMs;
       downloadLLM: (userName: string, modelName: string, fileName: string, onProgress?: (percentage: number) => void) => Promise<void>;
       generate: (name: string, prompt: string) => Promise<void>;
-      saveChatHistory: (chatId: string, userMessage: string, aiResponse: string) => Promise<void>;
+      saveChatHistory: (chatId: string, userMessage: string, aiResponse: string, modelName: string) => Promise<void>;
       loadChatHistory: (chatId: string) => Promise<void>;
     }
   }
