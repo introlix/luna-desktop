@@ -34,18 +34,6 @@ export const ChatDetails = () => {
     }, [prompt])
 
     useEffect(() => {
-        const handleChunk = (event: Event) => {
-            const chunk = (event as CustomEvent).detail;
-            setAiResponse((prevResponse) => prevResponse + chunk); // Append the current chunk to the response
-        };
-
-        const handleComplete = () => {
-            setIsResponseComplete(true);
-        };
-
-        // Attach listeners
-        window.addEventListener("generationChunk", handleChunk);
-        window.addEventListener("generationComplete", handleComplete);
 
         const fetchChatHistory = async () => {
             try {
@@ -63,24 +51,7 @@ export const ChatDetails = () => {
         };
 
         fetchChatHistory();
-
-        return () => {
-            // Cleanup listeners on component unmount
-            window.removeEventListener("generationChunk", handleChunk);
-            window.removeEventListener("generationComplete", handleComplete);
-        };
     }, [])
-
-    useEffect(() => {
-        if (isResponseComplete) {
-            // When the response is complete, save the chat history
-            if (prompt && aiResponse) {
-                window.context.saveChatHistory(chatId || '', prompt, aiResponse, selectedModel || ''); // Save user prompt and AI response
-            }
-            window.location.reload();
-            setDisableSubmit(false);
-        }
-    }, [isResponseComplete, aiResponse, prompt]);
 
     const onSubmit = async () => {
         setDisableSubmit(true);
@@ -92,17 +63,61 @@ export const ChatDetails = () => {
             alert("Please select a model!");
             return;
         }
+        const modelPath = await window.context.getLLMPath(selectedModel);
+
+        setIsResponseComplete(false); // Reset the completion flag
 
         try {
-            await window.context.generate(selectedModel, prompt); // Initiate the generation process
-            // setAiResponse(""); // Clear the response before new chunks are received
-            setIsResponseComplete(false); // Reset the completion flag
-        } catch (error) {
-            console.error("Error in submission:", error);
-        }
+            const body = JSON.stringify({
+                model_path: modelPath,
+                chat_format: "llama-2",
+                prompt: prompt,
+                system_prompt: "You are a ai chatbot. Your task is to generate a response to the user prompt.",
+            });
 
-        setPrompt(""); // Clear the input field after submission
+            const response = await fetch('http://127.0.0.1:11343/chat', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body,
+            });
+            if (!response.body) {
+                throw new Error('Readable stream not supported.');
+            }
+
+            const reader = response.body.getReader();
+            const decoder = new TextDecoder('utf-8');
+            let result = '';
+
+            while (true) {
+                const { done, value } = await reader.read();
+                if (done) break;
+
+                // Decode the chunk and append it
+                const chunk = decoder.decode(value, { stream: true });
+                result += chunk;
+                setAiResponse((prev) => prev + chunk); // Update response state
+            }
+
+            setIsResponseComplete(true);
+        } catch (error) {
+            console.error('Error:', error);
+            setAiResponse('An error occurred.');
+            setIsResponseComplete(true);
+        }
     };
+
+    useEffect(() => {
+        if (isResponseComplete) {
+            // When the response is complete, save the chat history
+            if (prompt && aiResponse) {
+                window.context.saveChatHistory(chatId || '', prompt, aiResponse, selectedModel || ''); // Save user prompt and AI response
+            }
+            window.location.reload();
+            setDisableSubmit(false);
+        }
+    }, [isResponseComplete, aiResponse, prompt]);
 
 
     return (
@@ -138,7 +153,7 @@ export const ChatDetails = () => {
                             {aiResponse == '' ?
                                 <div className="w-full flex items-center justify-center">
                                     <div className="md:w-full lg:w-1/2">
-                                        
+
                                     </div>
                                 </div> :
                                 <div className="my-10">

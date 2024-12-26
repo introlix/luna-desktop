@@ -1,8 +1,13 @@
-import { downloadLLM, generate, getLLMs, loadChatHistory, saveChatHistory } from '@/lib';
+const os = require('os');
+import * as path from 'path';
+import { downloadLLM, generate, getLLMPath, getLLMs, loadChatHistory, saveChatHistory } from '@/lib';
 import { app, shell, BrowserWindow, ipcMain } from 'electron'
 import { join } from 'path'
-import { electronApp, optimizer, is } from '@electron-toolkit/utils'
-import icon from '../../resources/icon.png?asset'
+import { electronApp, optimizer, is } from '@electron-toolkit/utils';
+import icon from '../../resources/icon.png?asset';
+import luna_server_win_x64 from "../../resources/luna-server-win-x64/luna-server.exe?asset";
+import luna_server_linux_x64 from "../../resources/luna-server-linux-x64/luna-server?asset";
+import { spawn } from 'child_process';
 
 function createWindow(): void {
   // Create the browser window.
@@ -14,7 +19,7 @@ function createWindow(): void {
     ...(process.platform === 'linux' ? { icon } : {}),
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
-      sandbox: false
+      sandbox: false,
     }
   })
 
@@ -42,6 +47,30 @@ app.whenReady().then(() => {
     optimizer.watchWindowShortcuts(window)
   })
 
+  const platform = os.platform();
+
+  const isDevelopment = is.dev;
+  const basePath = isDevelopment ? app.getAppPath() : process.resourcesPath;
+
+  let llamaBinary;
+  if (platform === 'win32') {
+    llamaBinary = isDevelopment
+      ? luna_server_win_x64
+      : path.join(basePath, 'resources', 'luna-server-win-x64', 'luna-server.exe');
+  } else if (platform === 'linux') {
+    llamaBinary = isDevelopment
+      ? luna_server_linux_x64
+      : path.join(basePath, 'resources', 'luna-server-linux-x64', 'luna-server');
+  } else {
+    throw new Error('Unsupported platform!');
+  }
+
+  const serverProcess = spawn(llamaBinary, [], { stdio: 'inherit' });
+
+  serverProcess.on('error', (err) => {
+    console.error('Failed to start server:', err);
+  });
+
   ipcMain.handle('downloadLLM', async (event, userName: string, modelName: string, fileName: string) => {
     try {
       await downloadLLM(userName, modelName, fileName, (percentage) => {
@@ -60,6 +89,10 @@ app.whenReady().then(() => {
 
   ipcMain.handle('getLLMs', async () => {
     return getLLMs();
+  });
+
+  ipcMain.handle('getLLMPath', async (_, name: string) => {
+    return getLLMPath(name);
   });
 
   ipcMain.handle('generate', async (event, name: string, prompt: string) => {
@@ -99,6 +132,9 @@ app.whenReady().then(() => {
   app.on('activate', function () {
     if (BrowserWindow.getAllWindows().length === 0) createWindow()
   })
+  app.on('before-quit', () => {
+    serverProcess.kill();
+  });
 })
 
 app.on('window-all-closed', () => {

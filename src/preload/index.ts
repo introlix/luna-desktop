@@ -5,6 +5,7 @@ try {
     contextBridge.exposeInMainWorld('context', {
         locale: navigator.language,
         getLLMs: () => ipcRenderer.invoke('getLLMs'),
+        getLLMPath: (name: string) => ipcRenderer.invoke('getLLMPath', name),
         // preload/index.ts
         generate: (name: string, prompt: string) => {
             return new Promise((_, reject) => {

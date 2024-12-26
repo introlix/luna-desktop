@@ -42,6 +42,10 @@ export const getLLMInfoFromFileName = async (filename: string): Promise<LLMInfo>
     }
 }
 
+export const getLLMPath = (name: string) => {
+    return path.join(getRootDir(), `${name}.gguf`);
+}
+
 export const downloadLLM = async (
     userName: string,
     modelName: string,
